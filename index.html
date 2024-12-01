@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>White Pine Tree Simulation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
+<script>
+  // Scene setup
+  const scene = new THREE.Scene();
+
+  // Camera setup
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, -10, 50);
+  camera.lookAt(0, 10, 0);
+
+  // Renderer setup
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  document.body.appendChild(renderer.domElement);
+
+  // Tree data
+  const branches = [];
+  const branchMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+  const maxBranches = 5000;
+
+  // Function to create a branch
+  function createBranch(start, direction, length) {
+    const end = new THREE.Vector3().copy(start).add(direction.clone().multiplyScalar(length));
+    return { start, end, direction, length, age: 0 };
+  }
+
+  // Add the initial trunk
+  branches.push(createBranch(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0), 5));
+
+  // Geometry for the branches
+  const branchGeometry = new THREE.BufferGeometry();
+  const positions = [];
+  const lineMesh = new THREE.LineSegments(branchGeometry, branchMaterial);
+  scene.add(lineMesh);
+
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Grow the tree by iterating through branches
+    if (branches.length < maxBranches) {
+      const newBranches = [];
+      branches.forEach((branch) => {
+        if (branch.age > 10 && Math.random() > 0.8) {
+          const randomDirection = new THREE.Vector3(
+            (Math.random() - 0.5) * 0.5,
+            Math.random() * 0.8,
+            (Math.random() - 0.5) * 0.5
+          ).normalize();
+          newBranches.push(createBranch(branch.end.clone(), randomDirection, branch.length * 0.8));
+        }
+        branch.age++;
+        branch.end.add(branch.direction.clone().multiplyScalar(0.02));
+      });
+      branches.push(...newBranches);
+    }
+
+    // Update branch positions
+    positions.length = 0;
+    branches.forEach((branch) => {
+      positions.push(branch.start.x, branch.start.y, branch.start.z);
+      positions.push(branch.end.x, branch.end.y, branch.end.z);
+    });
+
+    branchGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    branchGeometry.computeBoundingSphere();
+
+    renderer.render(scene, camera);
+  }
+
+  // Handle resizing
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  });
+
+  animate();
+</script>
+</body>
+</html>
