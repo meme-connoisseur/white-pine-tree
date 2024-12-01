@@ -1,99 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
   <title>White Pine Tree Simulation</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
   </style>
 </head>
 <body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"></script>
-<script>
-  // Scene setup
-  const scene = new THREE.Scene();
-
-  // Camera setup
-  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, -10, 50);
-  camera.lookAt(0, 10, 0);
-
-  // Renderer setup
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  document.body.appendChild(renderer.domElement);
-
-  // Tree data
-  const branches = [];
-  const branchMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-  const maxBranches = 5000;
-
-  // Function to create a branch
-  function createBranch(start, direction, length) {
-    const end = new THREE.Vector3().copy(start).add(direction.clone().multiplyScalar(length));
-    return { start, end, direction, length, age: 0 };
-  }
-
-  // Add the initial trunk
-  branches.push(createBranch(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0), 5));
-
-  // Geometry for the branches
-  const branchGeometry = new THREE.BufferGeometry();
-  const positions = [];
-  const lineMesh = new THREE.LineSegments(branchGeometry, branchMaterial);
-  scene.add(lineMesh);
-
-  // Animation loop
-  function animate() {
-    requestAnimationFrame(animate);
-
-    // Grow the tree by iterating through branches
-    if (branches.length < maxBranches) {
-      const newBranches = [];
-      branches.forEach((branch) => {
-        if (branch.age > 10 && Math.random() > 0.8) {
-          const randomDirection = new THREE.Vector3(
-            (Math.random() - 0.5) * 0.5,
-            Math.random() * 0.8,
-            (Math.random() - 0.5) * 0.5
-          ).normalize();
-          newBranches.push(createBranch(branch.end.clone(), randomDirection, branch.length * 0.8));
-        }
-        branch.age++;
-        branch.end.add(branch.direction.clone().multiplyScalar(0.02));
-      });
-      branches.push(...newBranches);
-    }
-
-    // Update branch positions
-    positions.length = 0;
-    branches.forEach((branch) => {
-      positions.push(branch.start.x, branch.start.y, branch.start.z);
-      positions.push(branch.end.x, branch.end.y, branch.end.z);
-    });
-
-    branchGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    branchGeometry.computeBoundingSphere();
-
-    renderer.render(scene, camera);
-  }
-
-  // Handle resizing
-  window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  animate();
-</script>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;White Pine Tree Simulation&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: black; /* Set background to black */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>canvas {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1">&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r148/three.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Scene setup</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const scene = new THREE.Scene();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Camera setup</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>camera.position.set(0, -10, 50);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>camera.lookAt(0, 10, 0);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Renderer setup</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });</p>
+<p class="p1"><span class="Apple-converted-space">  </span>renderer.setSize(window.innerWidth, window.innerHeight); // Ensure full screen size</p>
+<p class="p1"><span class="Apple-converted-space">  </span>renderer.setPixelRatio(window.devicePixelRatio);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.body.appendChild(renderer.domElement);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Tree data</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const branches = [];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const branchMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const maxBranches = 5000;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Function to create a branch</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function createBranch(start, direction, length) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const end = new THREE.Vector3().copy(start).add(direction.clone().multiplyScalar(length));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return { start, end, direction, length, age: 0 };</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Add the initial trunk</p>
+<p class="p1"><span class="Apple-converted-space">  </span>branches.push(createBranch(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0), 5));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Geometry for the branches</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const branchGeometry = new THREE.BufferGeometry();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const positions = [];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const lineMesh = new THREE.LineSegments(branchGeometry, branchMaterial);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>scene.add(lineMesh);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Animation loop</p>
+<p class="p1"><span class="Apple-converted-space">  </span>function animate() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>requestAnimationFrame(animate);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Grow the tree by iterating through branches</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (branches.length &lt; maxBranches) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const newBranches = [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>branches.forEach((branch) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (branch.age &gt; 10 &amp;&amp; Math.random() &gt; 0.8) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const randomDirection = new THREE.Vector3(</p>
+<p class="p1"><span class="Apple-converted-space">            </span>(Math.random() - 0.5) * 0.5,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>Math.random() * 0.8,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>(Math.random() - 0.5) * 0.5</p>
+<p class="p1"><span class="Apple-converted-space">          </span>).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>newBranches.push(createBranch(branch.end.clone(), randomDirection, branch.length * 0.8));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>branch.age++;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>branch.end.add(branch.direction.clone().multiplyScalar(0.02));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>branches.push(...newBranches);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Update branch positions</p>
+<p class="p1"><span class="Apple-converted-space">    </span>positions.length = 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>branches.forEach((branch) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>positions.push(branch.start.x, branch.start.y, branch.start.z);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>positions.push(branch.end.x, branch.end.y, branch.end.z);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>branchGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>branchGeometry.computeBoundingSphere();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.render(scene, camera);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Handle resizing</p>
+<p class="p1"><span class="Apple-converted-space">  </span>window.addEventListener('resize', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.setSize(window.innerWidth, window.innerHeight);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>camera.aspect = window.innerWidth / window.innerHeight;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>camera.updateProjectionMatrix();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>animate();</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
 </body>
 </html>
